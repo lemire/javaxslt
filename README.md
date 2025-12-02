@@ -1,6 +1,6 @@
-# XSLT Transformer — Application de bureau
+# Transformateur XSTL — Application de bureau
 
-Une application de bureau simple pour transformer du XML à l'aide de feuilles de style XSLT. Interface Swing avec éditeurs enrichis (RSyntaxTextArea).
+Une application de bureau simple pour transformer du XML à l'aide de feuilles de style XSLT. 
 
 ## Installation de Java et Maven
 
