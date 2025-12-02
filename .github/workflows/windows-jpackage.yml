@@ -39,18 +39,13 @@ jobs:
 
       - name: Create MSI with jpackage
         run: |
-          jpackage --type msi \
-            --input target \
-            --name XsltTransformer \
-            --main-jar xslt-transformer-app-1.0.0.jar \
-            --main-class XsltTransformerApp \
-            --icon target/app-icon.ico \
-            --app-version 1.0.0 \
-            --dest target/installer
+          jpackage --type msi --input target --name XsltTransformer --main-jar xslt-transformer-app-1.0.0.jar --main-class XsltTransformerApp --icon target/app-icon.ico --app-version 1.0.0 --dest target/installer
 
       - name: Upload MSI to GitHub Release
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: target/installer/XsltTransformer-1.0.0.msi

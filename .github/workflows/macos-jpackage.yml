@@ -5,6 +5,8 @@ on:
     types: [published]
   workflow_dispatch:
 
+permissions: write-all
+
 jobs:
   build-dmg:
     runs-on: macos-latest
@@ -63,6 +65,8 @@ jobs:
       - name: Upload DMG to GitHub Release
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: target/installer/XsltTransformer-1.0.0.dmg
@@ -72,6 +76,8 @@ jobs:
       - name: Upload App ZIP to GitHub Release
         if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
           asset_path: target/installer/XsltTransformer.app.zip
