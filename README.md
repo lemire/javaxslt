@@ -61,60 +61,14 @@ Cette commande produit le JAR dans `target/` (un JAR ombré/fat qui contient les
 
 ## Exécution
 
-- Exécuter le JAR construit :
-	```sh
-	java -jar target/xslt-transformer-app-1.0.0-shaded.jar
-	```
 - En développement vous pouvez lancer via Maven :
 	```sh
-	mvn -DskipTests exec:java
+	mvn exec:java
 	```
-
-## Création de packages natifs (macOS / Windows)
-
-Le projet inclut des workflows GitHub Actions pour produire des installateurs :
-
-- macOS : un workflow génère un `.dmg` et un `.app` via `jpackage` (fichier dans les artefacts de release).
-- Windows : un workflow génère un `MSI` via `jpackage` sur un runner Windows (artefact de release).
-
-Localement, vous pouvez utiliser `jpackage` (présent dans les distributions JDK modernes) :
-
-### macOS (exemple local)
-
-```sh
-# génère un .icns depuis target/app-icon.png (outil `iconutil` disponible sur macOS)
-# puis :
-jpackage --type dmg \
-	--input target \
-	--name XsltTransformer \
-	--main-jar xslt-transformer-app-1.0.0.jar \
-	--main-class XsltTransformerApp \
-	--icon target/app-icon.icns \
-	--app-version 1.0.0 \
-	--dest target/installer
-```
-
-### Windows (exemple local — nécessite jpackage exécuté sur Windows)
-
-```ps1
-jpackage --type msi `
-	--input target `
-	--name XsltTransformer `
-	--main-jar xslt-transformer-app-1.0.0.jar `
-	--main-class XsltTransformerApp `
-	--icon target/app-icon.ico `
-	--app-version 1.0.0 `
-	--dest target/installer
-```
-
-Note : pour Windows, `jpackage` requiert WiX Toolset installé pour produire un MSI.
-
-## Release et artefacts CI
-
-Les workflows GitHub Actions sont configurés pour se déclencher lors d'une **release publiée** et téléverser les installateurs (DMG / MSI) directement dans la Release GitHub. Pour produire les installateurs via CI :
-
-1. Poussez votre code sur la branche `main`.
-2. Créez une Release via l'interface GitHub (nouveau tag / release). Les workflows déclencheront et, si tout se passe bien, les installateurs seront ajoutés à la Release.
+- Exécuter le JAR construit :
+	```sh
+	java -jar target/xslt-transformer-app-1.0.0.jar 
+	```
 
 ## Utilisation
 
@@ -123,8 +77,4 @@ Les workflows GitHub Actions sont configurés pour se déclencher lors d'une **r
 3. Le bouton `Appliquer` est activé lorsque les deux entrées sont valides.
 4. Cliquez sur `Appliquer XSLT →` pour générer le résultat, qui s'affiche en bas.
 
-## Dépannage
-
-- Si l'application n'apparaît pas ou si l'icône du Dock est celle de Java par défaut, créez un package natif (`.app` ou `.dmg`) avec `jpackage` pour une intégration complète.
-- Pour des builds signés/notarisés (macOS), un certificat Apple Developer est requis.
 
