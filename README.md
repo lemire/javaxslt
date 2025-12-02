@@ -49,6 +49,12 @@ mvn -version
 ```
 Les deux commandes doivent afficher la version installée.
 
+
+## Récupération du projet
+
+[Vous pouvez charger le fichier zip comprenant le projet Java](https://github.com/lemire/javaxslt/archive/refs/heads/main.zip). Vous devez ensuite placer les fichiers à un endroit approprié sur votre machine.
+
+
 ## Compilation
 
 Dans le dossier du projet, exécutez :
