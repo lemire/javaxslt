@@ -55,11 +55,33 @@ jobs:
             --app-version 1.0.0 \
             --dest target/installer
 
-      - name: Zip app image
+      - id: find_app_zip
+        name: Find or create App ZIP
         if: github.event_name == 'release'
         run: |
+          set -e
+          APP_DIR=""
+          # Prefer the expected path
           if [ -d "target/installer/XsltTransformer.app" ]; then
-            ditto -c -k --sequesterRsrc --keepParent target/installer/XsltTransformer.app target/installer/XsltTransformer.app.zip
+            APP_DIR="target/installer/XsltTransformer.app"
+          else
+            # Try to find any .app produced by jpackage
+            FOUND=$(find target/installer -maxdepth 2 -name "*.app" -print -quit || true)
+            if [ -n "$FOUND" ]; then
+              APP_DIR="$FOUND"
+            fi
+          fi
+
+          if [ -n "$APP_DIR" ]; then
+            BASENAME=$(basename "$APP_DIR")
+            ZIP_PATH="target/installer/${BASENAME}.zip"
+            echo "Found app: $APP_DIR -> will create $ZIP_PATH"
+            ditto -c -k --sequesterRsrc --keepParent "$APP_DIR" "$ZIP_PATH"
+            echo "asset_path=$ZIP_PATH" >> "$GITHUB_OUTPUT"
+          else
+            echo "No .app found in target/installer; skipping app zip creation"
+            echo "asset_path=" >> "$GITHUB_OUTPUT"
+            ls -la target/installer || true
           fi
 
       - name: Upload DMG to GitHub Release
@@ -74,12 +96,12 @@ jobs:
           asset_content_type: application/x-apple-diskimage
 
       - name: Upload App ZIP to GitHub Release
-        if: github.event_name == 'release'
+        if: github.event_name == 'release' && steps.find_app_zip.outputs.asset_path != ''
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: target/installer/XsltTransformer.app.zip
+          asset_path: ${{ steps.find_app_zip.outputs.asset_path }}
           asset_name: XsltTransformer-${{ github.event.release.tag_name }}.app.zip
           asset_content_type: application/zip
